@@ -28,6 +28,9 @@ namespace PoGo.NecroBot.Logic.Service
         private bool _loggedIn;
         private readonly ISession _session;
 
+        private bool IsLogEnable = false;
+        private long LogChatId = 0; 
+
         public TelegramService(string apiKey, ISession session)
         {
             try
@@ -311,6 +314,18 @@ namespace PoGo.NecroBot.Logic.Service
                     SendMessage(message.Chat.Id, Console.Title);
                     break;
 
+                case "/logenable":
+                    IsLogEnable = true;
+                    LogChatId = message.Chat.Id;
+                    SendMessage(message.Chat.Id, "Log Feed Enabled");
+                    break;
+
+                case "/logdisable":
+                    IsLogEnable = false;
+                    LogChatId = 0;
+                    SendMessage(message.Chat.Id, "Log Feed Disabled");
+                    break;
+
                 case "/restart":
                     Process.Start(Assembly.GetEntryAssembly().Location);
                     SendMessage(message.Chat.Id, "Restarted Bot. Closing old Instance... BYE!");
@@ -322,6 +337,12 @@ namespace PoGo.NecroBot.Logic.Service
                     SendMessage(message.Chat.Id, answerTextmessage);
                     break;
             }
+        }
+
+        public void SendLog(string message)
+        {
+            if(IsLogEnable)
+            SendMessage(LogChatId, message);
         }
 
         private async void SendLocation(long chatId, double currentLatitude, double currentLongitude)

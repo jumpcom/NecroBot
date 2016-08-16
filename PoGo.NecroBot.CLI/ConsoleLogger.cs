@@ -46,6 +46,9 @@ namespace PoGo.NecroBot.CLI
             Console.OutputEncoding = Encoding.UTF8;
             if (level > _maxLogLevel)
                 return;
+
+            if(_session != null && _session.Telegram != null)
+            _session.Telegram.SendLog(message);
             
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (level)
